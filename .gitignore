@@ -2,3 +2,4 @@ project.private.config.json
 node_modules/
 .DS_Store
 .gitkeys/
+NUL
