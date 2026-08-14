@@ -26,7 +26,8 @@ Page({
     periodStart: '',
     periodBtnText: '记录月经开始',    // 按钮文字（含所选日期）
     // 账号
-    accountText: ''
+    accountText: '',
+    loggedIn: false                  // 是否已登录（本地登录状态）
   },
 
   async onLoad() {
@@ -34,12 +35,31 @@ Page({
     await this.selectDate(this.today)
     this.loadPeriod()
     this.loadAccount()
+    this.refreshLogin()
   },
 
-  // 底部导航栏：同步选中「记录」
+  // 底部导航栏：同步选中「记录」；并刷新登录状态
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 0 })
+    }
+    this.refreshLogin()
+  },
+
+  // 刷新登录状态（本地存储，相当于 cookie）
+  refreshLogin() {
+    this.setData({ loggedIn: !!account.getLoginState() })
+  },
+
+  // 点击"微信登录"按钮
+  async onLoginTap() {
+    try {
+      await account.doLogin()
+      this.refreshLogin()
+      wx.showToast({ title: '登录成功', icon: 'success' })
+    } catch (e) {
+      console.error(e)
+      wx.showToast({ title: '登录失败，请重试', icon: 'none' })
     }
   },
 

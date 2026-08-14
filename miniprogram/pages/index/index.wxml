@@ -7,6 +7,12 @@
     </picker>
   </view>
 
+  <!-- 首次登录提示（未登录时显示） -->
+  <view class="login-banner" wx:if="{{!loggedIn}}">
+    <view class="login-banner-text">欢迎使用体温记录 · 登录后数据按微信账号独立保存</view>
+    <button class="login-btn" bindtap="onLoginTap">微信登录</button>
+  </view>
+
   <!-- 体温滚动选择（以 0.1 为单位） -->
   <view class="card temp-card">
     <view class="temp-value">

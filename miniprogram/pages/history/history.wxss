@@ -61,6 +61,12 @@
   background: #fff0f1;
 }
 
+/* 月经期：淡红背景连成带状 + 日期红色圈圈 */
+.cal-cell.menstruation {
+  background: #ffebee;
+  border-radius: 0;
+}
+
 .cal-day {
   font-size: 28rpx;
   color: #333;
@@ -78,13 +84,16 @@
   font-weight: 400;
 }
 
-/* 月经期：标红 */
-.cal-day.menstruation {
-  color: #e91e63;
-}
-
 .cal-day.today {
   border: 2rpx solid #ff6b6b;
+  box-sizing: border-box;
+  line-height: 52rpx;
+}
+
+/* 月经期：红色圈圈 */
+.cal-day.menstruation {
+  color: #e91e63;
+  border: 2rpx solid #e91e63;
   box-sizing: border-box;
   line-height: 52rpx;
 }
@@ -97,14 +106,6 @@
 
 .cal-temp.menstruation {
   color: #e91e63;
-}
-
-.cal-dot {
-  margin-top: 4rpx;
-  width: 10rpx;
-  height: 10rpx;
-  border-radius: 50%;
-  background: #e91e63;
 }
 
 .cal-legend {

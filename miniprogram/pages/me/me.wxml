@@ -1,17 +1,27 @@
 <view class="page">
-  <!-- 账号卡片 -->
-  <view class="card account-card">
-    <view class="account-avatar">👤</view>
-    <view class="account-info">
-      <view class="account-name">微信用户</view>
-      <view class="account-id">当前账号：{{accountText}}</view>
-      <view class="account-note">数据按微信账号独立保存</view>
+  <!-- 个人信息卡片：未登录显示登录入口，已登录显示昵称头像 -->
+  <view class="card account-card" bindtap="onCardTap">
+    <view class="account-avatar">
+      <image wx:if="{{loggedIn && avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill"></image>
+      <text wx:else class="avatar-text">👤</text>
     </view>
+    <view class="account-info">
+      <block wx:if="{{loggedIn}}">
+        <view class="account-name">{{nickname}}</view>
+        <view class="account-id">当前账号：{{accountText}}</view>
+        <view class="account-note">数据按微信账号独立保存</view>
+      </block>
+      <block wx:else>
+        <view class="account-name">未登录</view>
+        <view class="account-id">点击登录 · 数据按微信账号独立保存</view>
+      </block>
+    </view>
+    <view class="account-arrow" wx:if="{{!loggedIn}}">›</view>
   </view>
 
-  <!-- 占位功能入口 -->
+  <!-- 功能入口（切换账号仅登录后显示，其余为占位） -->
   <view class="card menu-card">
-    <view class="menu-item" bindtap="onFeatureTap" data-id="switch">
+    <view class="menu-item" wx:if="{{loggedIn}}" bindtap="onFeatureTap" data-id="switch">
       <text class="menu-name">切换账号</text>
       <text class="menu-arrow">›</text>
     </view>
@@ -33,9 +43,9 @@
     </view>
   </view>
 
-  <!-- 退出登录（占位） -->
-  <view class="card logout-card">
-    <view class="menu-item logout" bindtap="onFeatureTap" data-id="logout">
+  <!-- 退出登录（仅登录后显示） -->
+  <view class="card logout-card" wx:if="{{loggedIn}}">
+    <view class="menu-item logout" bindtap="onLogout">
       <text class="menu-name">退出登录</text>
     </view>
   </view>
