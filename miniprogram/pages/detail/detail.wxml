@@ -29,6 +29,7 @@
     <button class="save-btn" bindtap="onSave" disabled="{{saving}}">
       {{saving ? '保存中…' : '保存修改（自动记修改日志）'}}
     </button>
+    <button class="delete-btn" bindtap="onDelete" disabled="{{saving}}">删除这条记录</button>
   </view>
 
   <!-- 记录日志：创建 + 每次修改 -->

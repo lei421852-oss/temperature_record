@@ -1,8 +1,10 @@
 <view class="page">
-  <!-- 顶部：自动生成的今日日期 -->
+  <!-- 顶部：日期（点击可选择过去日期补记） -->
   <view class="header">
-    <view class="date-big">{{todayCN}}</view>
-    <view class="date-sub">今日记录 · 日期自动生成</view>
+    <picker mode="date" value="{{selectedDate}}" end="{{today}}" bindchange="onDateChange">
+      <view class="date-big">{{selectedDateCN}}</view>
+      <view class="date-sub">{{isBackfill ? '补记 · 点击可换日期' : '今日记录 · 点击可换日期'}}</view>
+    </picker>
   </view>
 
   <!-- 体温滚动选择（以 0.1 为单位） -->
@@ -26,20 +28,23 @@
   <view class="account-line">数据按微信账号独立保存 · 当前账号：{{accountText}}</view>
 
   <button class="save-btn" bindtap="onSave" disabled="{{saving || !loaded}}">
-    {{saving ? '保存中…' : (hasTodayRecord ? '更新今日记录' : '保存今日记录')}}
+    {{saving ? '保存中…' : (hasRecord ? '更新记录' : (isBackfill ? '补记该日' : '保存今日记录'))}}
   </button>
 
-  <!-- 月经记录：点击开始 / 再点结束 -->
+  <!-- 月经记录：点击开始 / 再点结束（按所选日期） -->
   <button class="period-btn {{periodActive ? 'active' : ''}}" bindtap="onPeriodTap" disabled="{{!loaded}}">
-    {{periodActive ? '结束月经（今天）' : '记录月经开始（今天）'}}
+    {{periodBtnText}}
   </button>
-  <view class="period-hint" wx:if="{{periodActive}}">月经进行中 · 始于 {{periodStart}}，再次点击可结束</view>
+  <view class="period-hint" wx:if="{{periodActive}}">
+    月经进行中 · 始于 {{periodStart}}
+    <text class="period-del" bindtap="onPeriodDelete">误点？删除本次</text>
+  </view>
 
   <!-- 功能入口 -->
   <view class="nav-row">
     <view class="card nav-card" bindtap="goHistory">
       <view class="nav-title">历史记录</view>
-      <view class="nav-desc">查看 / 修改</view>
+      <view class="nav-desc">查看 / 修改 / 删除</view>
       <view class="nav-desc">创建时间精确到秒 · 修改日志</view>
     </view>
     <view class="card nav-card" bindtap="goChart">

@@ -188,3 +188,40 @@
   font-size: 26rpx;
   padding: 120rpx 0;
 }
+
+/* ---------- 月经记录管理 ---------- */
+.period-card {
+  padding: 24rpx 28rpx;
+  margin-bottom: 24rpx;
+}
+
+.period-card-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.period-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1rpx solid #f2f2f2;
+  padding: 18rpx 0;
+}
+
+.period-item:first-of-type {
+  border-top: none;
+}
+
+.period-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.period-del-btn {
+  font-size: 24rpx;
+  color: #e53935;
+  border: 2rpx solid #ffb3b8;
+  border-radius: 28rpx;
+  padding: 6rpx 24rpx;
+}

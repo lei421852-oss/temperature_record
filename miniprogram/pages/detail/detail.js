@@ -80,5 +80,31 @@ Page({
     } finally {
       this.setData({ saving: false })
     }
+  },
+
+  // 删除这条记录（误操作纠错）
+  onDelete() {
+    if (!this.record || this.data.saving) return
+    wx.showModal({
+      title: '删除这条记录',
+      content: '将删除 ' + this.record.date + ' 的体温记录及其全部日志，不可恢复。确定删除？',
+      confirmText: '删除',
+      confirmColor: '#e53935',
+      success: async (r) => {
+        if (!r.confirm) return
+        wx.showLoading({ title: '删除中', mask: true })
+        try {
+          await db.deleteRecord(this.record._id, this.record.date)
+          wx.hideLoading()
+          wx.showToast({ title: '已删除', icon: 'success' })
+          setTimeout(() => wx.navigateBack(), 600)
+        } catch (e) {
+          wx.hideLoading()
+          console.error(e)
+          const info = db.friendlyError(e)
+          wx.showModal({ title: '删除失败', content: info.hint + '\n\n原始错误：' + info.raw, showCancel: false })
+        }
+      }
+    })
   }
 })

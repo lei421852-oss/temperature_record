@@ -74,6 +74,9 @@ Page({
         if (max - min < 1) max = min + 1
 
         ctx.clearRect(0, 0, width, height)
+        // 填充白色背景，避免导出图片背景透明
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, width, height)
 
         // 网格 + Y 轴刻度
         ctx.font = '11px sans-serif'

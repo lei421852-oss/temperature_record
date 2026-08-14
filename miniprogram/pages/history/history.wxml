@@ -26,6 +26,15 @@
     </view>
   </view>
 
+  <!-- 月经记录（可删除，误操作纠错） -->
+  <view class="card period-card" wx:if="{{periods.length}}">
+    <view class="period-card-title">月经记录（{{periods.length}} 次）</view>
+    <view class="period-item" wx:for="{{periods}}" wx:key="_id">
+      <view class="period-label">{{item.label}}</view>
+      <view class="period-del-btn" data-id="{{item._id}}" bindtap="onPeriodDel">删除</view>
+    </view>
+  </view>
+
   <view class="list-tip" wx:if="{{records.length}}">共 {{records.length}} 条记录 · 点击可修改</view>
 
   <view class="record-card" wx:for="{{records}}" wx:key="date" data-id="{{item._id}}" bindtap="goDetail">

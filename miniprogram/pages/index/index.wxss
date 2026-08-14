@@ -157,3 +157,9 @@
   font-size: 24rpx;
   color: #e91e63;
 }
+
+.period-del {
+  margin-left: 12rpx;
+  color: #999;
+  text-decoration: underline;
+}

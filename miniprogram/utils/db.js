@@ -178,6 +178,17 @@ async function endPeriod(periodId, date) {
   })
 }
 
+// 删除某天的体温记录及其全部日志（用于误操作纠错）
+async function deleteRecord(recordId, date) {
+  await recordsCol().doc(recordId).remove()
+  await logsCol().where({ recordDate: date }).remove()
+}
+
+// 删除某次月经记录（用于误操作纠错）
+async function deletePeriod(periodId) {
+  await periodsCol().doc(periodId).remove()
+}
+
 module.exports = {
   friendlyError,
   getRecordByDate,
@@ -190,5 +201,7 @@ module.exports = {
   getOngoingPeriod,
   getPeriods,
   startPeriod,
-  endPeriod
+  endPeriod,
+  deleteRecord,
+  deletePeriod
 }

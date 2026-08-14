@@ -86,6 +86,25 @@
   color: #fff;
 }
 
+.delete-btn {
+  margin-top: 20rpx;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+  background: #fff;
+  color: #e53935;
+  border: 2rpx solid #ffb3b8;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  height: 80rpx;
+  line-height: 76rpx;
+}
+
+.delete-btn[disabled] {
+  color: #ccc;
+  border-color: #eee;
+}
+
 .log-title {
   font-size: 30rpx;
   font-weight: 600;

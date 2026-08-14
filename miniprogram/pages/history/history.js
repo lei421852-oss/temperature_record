@@ -8,6 +8,7 @@ function pad(n) {
 Page({
   data: {
     records: [],
+    periods: [],           // 月经记录（供查看/删除）
     loading: true,
     empty: false,
     // 月历
@@ -61,9 +62,15 @@ Page({
       console.error('读取月经周期失败（若未创建 periods 集合，请按 README 创建）：', e)
     }
     this.buildPeriodMap(periods)
+    const periodView = periods.map(p => ({
+      _id: p._id,
+      label: (p.startDate ? p.startDate.slice(5).replace('-', '/') : '?') +
+        ' ~ ' +
+        (p.endDate ? p.endDate.slice(5).replace('-', '/') : '至今')
+    }))
 
-    // 3) 渲染列表 + 月历
-    this.setData({ records, empty: records.length === 0, loading: false })
+    // 3) 渲染列表 + 月历 + 月经记录
+    this.setData({ records, periods: periodView, empty: records.length === 0, loading: false })
     try {
       this.buildCalendar()
     } catch (e) {
@@ -142,6 +149,28 @@ Page({
     if (rec) {
       wx.navigateTo({ url: '/pages/detail/detail?id=' + rec._id })
     }
+  },
+
+  // 删除一次月经记录（误操作纠错）
+  onPeriodDel(e) {
+    const id = e.currentTarget.dataset.id
+    wx.showModal({
+      title: '删除月经记录',
+      content: '删除这次月经记录？此操作不可恢复。',
+      confirmText: '删除',
+      confirmColor: '#e53935',
+      success: async (r) => {
+        if (!r.confirm) return
+        try {
+          await db.deletePeriod(id)
+          wx.showToast({ title: '已删除', icon: 'success' })
+          this.load()
+        } catch (err) {
+          console.error(err)
+          wx.showToast({ title: '删除失败', icon: 'none' })
+        }
+      }
+    })
   },
 
   goDetail(e) {

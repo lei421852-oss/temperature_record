@@ -6,30 +6,53 @@ const temp = require('../../utils/temp')
 
 Page({
   data: {
-    todayCN: '',                     // 今日日期（精确到日）
+    today: '',                       // 今天（限制不能选未来日期）
+    selectedDate: '',                // 当前选择/记录的日期（默认今天，可补记过去）
+    selectedDateCN: '',              // 展示用
+    selectedDateShort: '',           // 如 04-01
+    isBackfill: false,               // 是否补记过去日期
     tempOptions: temp.tempOptions(), // 滚动选择项：35.0 ~ 42.0，0.1 为单位
     pickerValue: [0],                // 滚动选择器当前下标
     temp: config.DEFAULT_TEMP,       // 当前选择的体温
     tempMin: config.TEMP_MIN,
     tempMax: config.TEMP_MAX,
     hint: '',                        // 提示文案（默认值来源）
-    hasTodayRecord: false,
+    hasRecord: false,                // 所选日期是否已有记录
     saving: false,
     loaded: false,
     // 月经状态
-    periodActive: false,             // 是否有进行中的月经周期
-    periodId: '',                    // 进行中周期的 _id
-    periodStart: '',                 // 进行中周期的开始日期
+    periodActive: false,
+    periodId: '',
+    periodStart: '',
+    periodBtnText: '记录月经开始',    // 按钮文字（含所选日期）
     // 账号
-    accountText: ''                  // 当前账号（掩码显示）
+    accountText: ''
   },
 
   async onLoad() {
     this.today = formatDate(new Date())
-    this.setData({ todayCN: formatDateCN(new Date()) })
-    await this.loadInit()
+    await this.selectDate(this.today)
     this.loadPeriod()
     this.loadAccount()
+  },
+
+  // 切换记录日期（默认今天；点击顶部日期可补记过去某天）
+  async selectDate(date) {
+    const isBackfill = date < this.today
+    this.setData({
+      selectedDate: date,
+      selectedDateCN: formatDateCN(new Date(date + 'T00:00:00')),
+      selectedDateShort: date.slice(5),
+      isBackfill,
+      periodBtnText: this.data.periodActive
+        ? '结束月经（' + date.slice(5) + '）'
+        : '记录月经开始（' + date.slice(5) + '）'
+    })
+    await this.loadForDate(date)
+  },
+
+  onDateChange(e) {
+    this.selectDate(e.detail.value)
   },
 
   // 同步显示数值与滚动选择器位置
@@ -37,27 +60,29 @@ Page({
     this.setData({ temp: value, pickerValue: [temp.tempIndex(value)] })
   },
 
-  // 初始值：今天的记录 > 上一条记录 > 常见体温(36.5)
-  async loadInit() {
+  // 加载所选日期的记录：有则显示，没有则以上一次记录为默认值
+  async loadForDate(date) {
     wx.showLoading({ title: '加载中', mask: true })
     try {
-      const todayRecord = await db.getRecordByDate(this.today)
-      if (todayRecord) {
-        this.applyTemp(todayRecord.temp)
+      const rec = await db.getRecordByDate(date)
+      if (rec) {
+        this.applyTemp(rec.temp)
         this.setData({
-          hasTodayRecord: true,
-          hint: '今日已记录 ' + todayRecord.temp + '℃，保存将更新并记修改日志'
+          hasRecord: true,
+          hint: date + ' 已记录 ' + rec.temp + '℃，保存将更新并记修改日志'
         })
       } else {
         const latest = await db.getLatestRecord()
         if (latest) {
           this.applyTemp(latest.temp)
           this.setData({
+            hasRecord: false,
             hint: '初始值 = 上一次记录：' + latest.temp + '℃（' + latest.date + '）'
           })
         } else {
           this.applyTemp(config.DEFAULT_TEMP)
           this.setData({
+            hasRecord: false,
             hint: '暂无历史记录，默认体温 ' + config.DEFAULT_TEMP + '℃'
           })
         }
@@ -81,7 +106,12 @@ Page({
     try {
       const p = await db.getOngoingPeriod()
       if (p) {
-        this.setData({ periodActive: true, periodId: p._id, periodStart: p.startDate })
+        this.setData({
+          periodActive: true,
+          periodId: p._id,
+          periodStart: p.startDate,
+          periodBtnText: '结束月经（' + this.data.selectedDateShort + '）'
+        })
       }
     } catch (e) {
       // 若未创建 periods 集合，这里不影响体温记录功能
@@ -106,22 +136,23 @@ Page({
     this.setData({ saving: true })
     try {
       const tempVal = this.data.temp
-      const todayRecord = await db.getRecordByDate(this.today)
-      if (todayRecord) {
-        if (todayRecord.temp === tempVal) {
+      const date = this.data.selectedDate
+      const rec = await db.getRecordByDate(date)
+      if (rec) {
+        if (rec.temp === tempVal) {
           wx.showToast({ title: '体温未变化', icon: 'none' })
           return
         }
-        await db.updateRecord(todayRecord._id, this.today, todayRecord.temp, tempVal)
-        this.setData({ hint: '今日已记录 ' + tempVal + '℃，保存将更新并记修改日志' })
+        await db.updateRecord(rec._id, date, rec.temp, tempVal)
+        this.setData({ hint: date + ' 已记录 ' + tempVal + '℃，保存将更新并记修改日志' })
         wx.showToast({ title: '已更新', icon: 'success' })
       } else {
-        await db.createRecord(this.today, tempVal)
+        await db.createRecord(date, tempVal)
         this.setData({
-          hasTodayRecord: true,
-          hint: '今日已记录 ' + tempVal + '℃，保存将更新并记修改日志'
+          hasRecord: true,
+          hint: date + ' 已记录 ' + tempVal + '℃，保存将更新并记修改日志'
         })
-        wx.showToast({ title: '已保存', icon: 'success' })
+        wx.showToast({ title: this.data.isBackfill ? '已补记' : '已保存', icon: 'success' })
       }
     } catch (e) {
       console.error(e)
@@ -132,18 +163,29 @@ Page({
     }
   },
 
-  // 月经开始 / 结束切换：点击记录开始，再点记录结束
+  // 月经开始 / 结束切换：点击记录开始，再点记录结束（按所选日期）
   async onPeriodTap() {
     if (this.periodBusy || this.data.saving) return
     this.periodBusy = true
     try {
+      const date = this.data.selectedDate
       if (this.data.periodActive) {
-        await db.endPeriod(this.data.periodId, this.today)
-        this.setData({ periodActive: false, periodId: '', periodStart: '' })
+        await db.endPeriod(this.data.periodId, date)
+        this.setData({
+          periodActive: false,
+          periodId: '',
+          periodStart: '',
+          periodBtnText: '记录月经开始（' + this.data.selectedDateShort + '）'
+        })
         wx.showToast({ title: '已记录结束', icon: 'success' })
       } else {
-        const id = await db.startPeriod(this.today)
-        this.setData({ periodActive: true, periodId: id, periodStart: this.today })
+        const id = await db.startPeriod(date)
+        this.setData({
+          periodActive: true,
+          periodId: id,
+          periodStart: date,
+          periodBtnText: '结束月经（' + this.data.selectedDateShort + '）'
+        })
         wx.showToast({ title: '已记录开始', icon: 'success' })
       }
     } catch (e) {
@@ -153,6 +195,33 @@ Page({
     } finally {
       this.periodBusy = false
     }
+  },
+
+  // 误操作时删除本次月经记录
+  onPeriodDelete() {
+    if (!this.data.periodActive) return
+    wx.showModal({
+      title: '删除本次月经记录',
+      content: '将删除始于 ' + this.data.periodStart + ' 的这条月经记录，不可恢复。确定删除？',
+      confirmText: '删除',
+      confirmColor: '#e53935',
+      success: async (r) => {
+        if (!r.confirm) return
+        try {
+          await db.deletePeriod(this.data.periodId)
+          this.setData({
+            periodActive: false,
+            periodId: '',
+            periodStart: '',
+            periodBtnText: '记录月经开始（' + this.data.selectedDateShort + '）'
+          })
+          wx.showToast({ title: '已删除', icon: 'success' })
+        } catch (e) {
+          console.error(e)
+          wx.showToast({ title: '删除失败', icon: 'none' })
+        }
+      }
+    })
   },
 
   goHistory() {
