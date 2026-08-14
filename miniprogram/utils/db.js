@@ -4,8 +4,13 @@
 // 数据集合说明：
 //  - records：体温记录，一天一条。字段：date(YYYY-MM-DD)、temp、createdAt(ms)、updatedAt(ms)
 //  - logs：日志表，创建/修改都记一行。字段：recordDate、action(create|update)、oldTemp、newTemp、time(ms)
+//  - periods：月经周期。字段：startDate(YYYY-MM-DD)、endDate(YYYY-MM-DD，'' 表示进行中)、createdAt(ms)、updatedAt(ms)
 //
-// 集合权限建议设为「仅创建者可读写」，这样每个人只能看到/修改自己的数据。
+// 账号隔离：集合权限设为「仅创建者可读写」后，云端强制每个微信账号只能读写
+// 自己创建的数据（这是数据相互独立的根本保障）。此外每条数据写入时还会带上
+// openid 字段标记归属（云数据库同时自动写入 _openid）。
+
+const account = require('./account')
 
 function db() {
   return wx.cloud.database()
@@ -13,6 +18,7 @@ function db() {
 
 const recordsCol = () => db().collection('records')
 const logsCol = () => db().collection('logs')
+const periodsCol = () => db().collection('periods')
 
 // 单次拉取上限（小程序端每页最多 20 条）
 const PAGE_SIZE = 20
@@ -35,7 +41,7 @@ function friendlyError(e) {
     return { raw, hint: '云开发不可用：请确认使用的是自己注册的真实 AppID（测试号/游客 AppID 不支持云开发），并在开发者工具中已开通云开发。' }
   }
   if (errCode === -502005 || raw.indexOf('collection not exist') > -1 || raw.indexOf('DATABASE_COLLECTION_NOT_EXIST') > -1) {
-    return { raw, hint: '数据库集合不存在：请在「云开发控制台 → 数据库」中新建 records 和 logs 两个集合。' }
+    return { raw, hint: '数据库集合不存在：请在「云开发控制台 → 数据库」中新建 records、logs、periods 三个集合。' }
   }
   if (errCode === -502004 || raw.indexOf('document not exist') > -1 || raw.indexOf('DOCUMENT_NOT_EXIST') > -1) {
     return { raw, hint: '这条记录不存在：可能已被删除，请返回列表刷新后重试。' }
@@ -47,7 +53,7 @@ function friendlyError(e) {
     return { raw, hint: '未登录：请在开发者工具右上角登录微信账号后再试。' }
   }
   if (raw.indexOf('permission') > -1 || raw.indexOf('denied') > -1) {
-    return { raw, hint: '数据库权限不足：请检查 records / logs 集合的权限设置（建议「仅创建者可读写」）。' }
+    return { raw, hint: '数据库权限不足：请检查 records / logs / periods 集合的权限设置（建议「仅创建者可读写」）。' }
   }
   if (raw.indexOf('cloud') > -1 && (raw.indexOf('init') > -1 || raw.indexOf('not init') > -1)) {
     return { raw, hint: '云开发未初始化：请确认已开通云开发，并重新编译后重试。' }
@@ -98,38 +104,77 @@ async function getLogsByDate(date) {
   return res.data
 }
 
-// 新建记录，并写入一条创建日志
+// 新建记录，并写入一条创建日志（带账号归属标记）
 async function createRecord(date, temp) {
   const now = Date.now()
-  const recordRes = await recordsCol().add({
-    data: { date, temp, createdAt: now, updatedAt: now }
-  })
-  await logsCol().add({
-    data: {
-      recordDate: date,
-      action: 'create',
-      oldTemp: null,
-      newTemp: temp,
-      time: now
-    }
-  })
+  const openid = await account.getOpenid()
+  const recordData = { date, temp, createdAt: now, updatedAt: now }
+  const logData = {
+    recordDate: date,
+    action: 'create',
+    oldTemp: null,
+    newTemp: temp,
+    time: now
+  }
+  if (openid) {
+    recordData.openid = openid
+    logData.openid = openid
+  }
+  const recordRes = await recordsCol().add({ data: recordData })
+  await logsCol().add({ data: logData })
   return recordRes._id
 }
 
-// 更新记录体温，并写入一条修改日志
+// 更新记录体温，并写入一条修改日志（带账号归属标记）
 async function updateRecord(recordId, date, oldTemp, newTemp) {
   const now = Date.now()
+  const openid = await account.getOpenid()
   await recordsCol().doc(recordId).update({
     data: { temp: newTemp, updatedAt: now }
   })
-  await logsCol().add({
-    data: {
-      recordDate: date,
-      action: 'update',
-      oldTemp: oldTemp,
-      newTemp: newTemp,
-      time: now
-    }
+  const logData = {
+    recordDate: date,
+    action: 'update',
+    oldTemp: oldTemp,
+    newTemp: newTemp,
+    time: now
+  }
+  if (openid) logData.openid = openid
+  await logsCol().add({ data: logData })
+}
+
+// -------------------- 月经周期 --------------------
+
+// 获取进行中的月经周期（还没有结束日期），没有则返回 null
+async function getOngoingPeriod() {
+  const res = await periodsCol()
+    .where({ endDate: '' })
+    .orderBy('startDate', 'desc')
+    .limit(1)
+    .get()
+  return res.data.length ? res.data[0] : null
+}
+
+// 获取全部月经周期（按开始日期倒序）
+async function getPeriods() {
+  const res = await periodsCol().orderBy('startDate', 'desc').limit(500).get()
+  return res.data
+}
+
+// 记录月经开始（带账号归属标记），返回周期 id
+async function startPeriod(date) {
+  const now = Date.now()
+  const openid = await account.getOpenid()
+  const data = { startDate: date, endDate: '', createdAt: now, updatedAt: now }
+  if (openid) data.openid = openid
+  const res = await periodsCol().add({ data })
+  return res._id
+}
+
+// 结束月经（写入结束日期）
+async function endPeriod(periodId, date) {
+  await periodsCol().doc(periodId).update({
+    data: { endDate: date, updatedAt: Date.now() }
   })
 }
 
@@ -141,5 +186,9 @@ module.exports = {
   getAllRecords,
   getLogsByDate,
   createRecord,
-  updateRecord
+  updateRecord,
+  getOngoingPeriod,
+  getPeriods,
+  startPeriod,
+  endPeriod
 }

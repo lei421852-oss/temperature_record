@@ -73,8 +73,18 @@
   color: #888;
 }
 
+.account-line {
+  margin: 12rpx 8rpx 0;
+  text-align: center;
+  font-size: 22rpx;
+  color: #bbb;
+}
+
 .save-btn {
   margin-top: 32rpx;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
   background: linear-gradient(135deg, #ff6b6b, #ff4757);
   color: #fff;
   border-radius: 48rpx;
@@ -113,4 +123,37 @@
   font-size: 22rpx;
   color: #999;
   line-height: 1.6;
+}
+
+.period-btn {
+  margin-top: 24rpx;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+  background: #fff;
+  color: #e91e63;
+  border: 2rpx solid #ffb3c1;
+  border-radius: 48rpx;
+  font-size: 30rpx;
+  height: 88rpx;
+  line-height: 84rpx;
+}
+
+.period-btn.active {
+  background: #e91e63;
+  border-color: #e91e63;
+  color: #fff;
+}
+
+.period-btn[disabled] {
+  background: #f7f8fa;
+  color: #ccc;
+  border-color: #eee;
+}
+
+.period-hint {
+  margin-top: 14rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #e91e63;
 }

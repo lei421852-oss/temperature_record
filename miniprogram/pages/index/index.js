@@ -1,5 +1,6 @@
 const config = require('../../config')
 const db = require('../../utils/db')
+const account = require('../../utils/account')
 const { formatDate, formatDateCN } = require('../../utils/format')
 const temp = require('../../utils/temp')
 
@@ -14,13 +15,21 @@ Page({
     hint: '',                        // 提示文案（默认值来源）
     hasTodayRecord: false,
     saving: false,
-    loaded: false
+    loaded: false,
+    // 月经状态
+    periodActive: false,             // 是否有进行中的月经周期
+    periodId: '',                    // 进行中周期的 _id
+    periodStart: '',                 // 进行中周期的开始日期
+    // 账号
+    accountText: ''                  // 当前账号（掩码显示）
   },
 
   async onLoad() {
     this.today = formatDate(new Date())
     this.setData({ todayCN: formatDateCN(new Date()) })
     await this.loadInit()
+    this.loadPeriod()
+    this.loadAccount()
   },
 
   // 同步显示数值与滚动选择器位置
@@ -67,6 +76,25 @@ Page({
     }
   },
 
+  // 读取进行中的月经周期，决定按钮状态
+  async loadPeriod() {
+    try {
+      const p = await db.getOngoingPeriod()
+      if (p) {
+        this.setData({ periodActive: true, periodId: p._id, periodStart: p.startDate })
+      }
+    } catch (e) {
+      // 若未创建 periods 集合，这里不影响体温记录功能
+      console.error('读取月经周期失败（若未创建 periods 集合，请按 README 创建）：', e)
+    }
+  },
+
+  // 获取并显示当前账号（掩码）
+  async loadAccount() {
+    const oid = await account.getOpenid()
+    this.setData({ accountText: account.maskOpenid(oid) })
+  },
+
   // 滚动选择变化：e.detail.value = [选中项下标]
   onPickerChange(e) {
     const idx = e.detail.value[0]
@@ -101,6 +129,29 @@ Page({
       wx.showModal({ title: '保存失败', content: info.hint + '\n\n原始错误：' + info.raw, showCancel: false })
     } finally {
       this.setData({ saving: false })
+    }
+  },
+
+  // 月经开始 / 结束切换：点击记录开始，再点记录结束
+  async onPeriodTap() {
+    if (this.periodBusy || this.data.saving) return
+    this.periodBusy = true
+    try {
+      if (this.data.periodActive) {
+        await db.endPeriod(this.data.periodId, this.today)
+        this.setData({ periodActive: false, periodId: '', periodStart: '' })
+        wx.showToast({ title: '已记录结束', icon: 'success' })
+      } else {
+        const id = await db.startPeriod(this.today)
+        this.setData({ periodActive: true, periodId: id, periodStart: this.today })
+        wx.showToast({ title: '已记录开始', icon: 'success' })
+      }
+    } catch (e) {
+      console.error(e)
+      const info = db.friendlyError(e)
+      wx.showModal({ title: '操作失败', content: info.hint + '\n\n原始错误：' + info.raw, showCancel: false })
+    } finally {
+      this.periodBusy = false
     }
   },
 

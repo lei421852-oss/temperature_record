@@ -1,4 +1,31 @@
 <view class="page">
+  <!-- 月历：温度 + 月经标记 -->
+  <view class="card cal-card">
+    <view class="cal-header">
+      <view class="cal-nav" bindtap="prevMonth">‹</view>
+      <view class="cal-title">{{monthLabel}}</view>
+      <view class="cal-nav" bindtap="nextMonth">›</view>
+    </view>
+    <view class="cal-week">
+      <view class="cal-week-cell" wx:for="{{weekLabels}}" wx:key="*this">{{item}}</view>
+    </view>
+    <view class="cal-grid">
+      <block wx:for="{{days}}" wx:key="key">
+        <view wx:if="{{item.empty}}" class="cal-cell empty"></view>
+        <view wx:else class="cal-cell {{item.recorded ? 'recorded' : ''}}" data-date="{{item.date}}" data-recorded="{{item.recorded}}" bindtap="onDayTap">
+          <view class="cal-day {{item.isToday ? 'today' : ''}} {{item.menstruation ? 'menstruation' : ''}} {{item.recorded ? '' : 'unrecorded'}}">{{item.day}}</view>
+          <view class="cal-temp {{item.menstruation ? 'menstruation' : ''}}" wx:if="{{item.recorded}}">{{item.tempText}}</view>
+          <view class="cal-dot" wx:if="{{item.menstruation}}"></view>
+        </view>
+      </block>
+    </view>
+    <view class="cal-legend">
+      <view class="legend-item"><view class="legend-dot gray"></view>未记录</view>
+      <view class="legend-item"><view class="legend-dot pink"></view>已记录</view>
+      <view class="legend-item"><view class="legend-dot red"></view>月经期</view>
+    </view>
+  </view>
+
   <view class="list-tip" wx:if="{{records.length}}">共 {{records.length}} 条记录 · 点击可修改</view>
 
   <view class="record-card" wx:for="{{records}}" wx:key="date" data-id="{{item._id}}" bindtap="goDetail">

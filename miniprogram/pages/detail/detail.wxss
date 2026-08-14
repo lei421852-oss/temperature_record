@@ -70,6 +70,9 @@
 }
 
 .save-btn {
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
   background: linear-gradient(135deg, #ff6b6b, #ff4757);
   color: #fff;
   border-radius: 44rpx;

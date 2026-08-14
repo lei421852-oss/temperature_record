@@ -2,6 +2,146 @@
   padding: 24rpx 32rpx 60rpx;
 }
 
+/* ---------- 月历 ---------- */
+.cal-card {
+  padding: 24rpx 20rpx 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12rpx 16rpx;
+}
+
+.cal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.cal-nav {
+  font-size: 44rpx;
+  color: #999;
+  padding: 0 24rpx;
+  line-height: 1;
+}
+
+.cal-week {
+  display: flex;
+  margin-bottom: 8rpx;
+}
+
+.cal-week-cell {
+  width: 14.28%;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  padding: 8rpx 0;
+}
+
+.cal-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.cal-cell {
+  width: 14.28%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100rpx;
+  padding: 8rpx 0 10rpx;
+  border-radius: 12rpx;
+}
+
+/* 已记录：提亮 */
+.cal-cell.recorded {
+  background: #fff0f1;
+}
+
+.cal-day {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+  width: 56rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  text-align: center;
+  border-radius: 50%;
+}
+
+/* 未记录：置灰 */
+.cal-day.unrecorded {
+  color: #ccc;
+  font-weight: 400;
+}
+
+/* 月经期：标红 */
+.cal-day.menstruation {
+  color: #e91e63;
+}
+
+.cal-day.today {
+  border: 2rpx solid #ff6b6b;
+  box-sizing: border-box;
+  line-height: 52rpx;
+}
+
+.cal-temp {
+  margin-top: 4rpx;
+  font-size: 20rpx;
+  color: #ff6b6b;
+}
+
+.cal-temp.menstruation {
+  color: #e91e63;
+}
+
+.cal-dot {
+  margin-top: 4rpx;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #e91e63;
+}
+
+.cal-legend {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12rpx;
+  padding-right: 8rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-left: 20rpx;
+  font-size: 20rpx;
+  color: #999;
+}
+
+.legend-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  margin-right: 6rpx;
+}
+
+.legend-dot.gray {
+  background: #ddd;
+}
+
+.legend-dot.pink {
+  background: #ffb3c1;
+}
+
+.legend-dot.red {
+  background: #e91e63;
+}
+
+/* ---------- 记录列表 ---------- */
 .list-tip {
   font-size: 24rpx;
   color: #999;

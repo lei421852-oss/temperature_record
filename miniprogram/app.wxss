@@ -4,6 +4,10 @@ page {
   color: #333;
 }
 
+button {
+  padding: 0; /* 去掉微信按钮默认内边距，保证文字居中 */
+}
+
 button::after {
   border: none;
 }
