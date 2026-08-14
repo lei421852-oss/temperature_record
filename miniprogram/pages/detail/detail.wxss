@@ -1,0 +1,137 @@
+.page {
+  padding: 24rpx 32rpx 60rpx;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.info-date {
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.info-times {
+  margin-top: 20rpx;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 26rpx;
+  padding: 8rpx 0;
+  color: #666;
+}
+
+.info-row .label {
+  color: #999;
+}
+
+.edit-title {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+.temp-value {
+  text-align: center;
+  margin: 12rpx 0;
+}
+
+.temp-num {
+  font-size: 96rpx;
+  font-weight: 700;
+  color: #ff6b6b;
+  line-height: 1.1;
+}
+
+.temp-unit {
+  font-size: 40rpx;
+  color: #ff6b6b;
+}
+
+.temp-picker {
+  width: 100%;
+  height: 240rpx;
+  margin: 8rpx 0 24rpx;
+}
+
+.picker-item {
+  height: 68rpx;
+  line-height: 68rpx;
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #555;
+  text-align: center;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ff4757);
+  color: #fff;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  height: 84rpx;
+  line-height: 84rpx;
+}
+
+.save-btn[disabled] {
+  background: #ffb3b8;
+  color: #fff;
+}
+
+.log-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.log-item {
+  border-top: 1rpx solid #f2f2f2;
+  padding: 18rpx 0;
+}
+
+.log-item:first-child {
+  border-top: none;
+}
+
+.log-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.log-action {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  margin-right: 16rpx;
+}
+
+.log-change {
+  font-size: 26rpx;
+  color: #ff6b6b;
+}
+
+.log-time {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.log-empty {
+  text-align: center;
+  color: #999;
+  font-size: 26rpx;
+  padding: 24rpx 0;
+}
+
+.loading {
+  text-align: center;
+  color: #999;
+  font-size: 26rpx;
+  padding: 120rpx 0;
+}

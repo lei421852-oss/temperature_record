@@ -1,0 +1,50 @@
+.page {
+  padding: 24rpx 32rpx 60rpx;
+}
+
+.list-tip {
+  font-size: 24rpx;
+  color: #999;
+  margin: 8rpx 8rpx 20rpx;
+}
+
+.record-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.record-date {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.record-created {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.record-temp .num {
+  font-size: 52rpx;
+  font-weight: 700;
+  color: #ff6b6b;
+}
+
+.record-temp .unit {
+  font-size: 28rpx;
+  color: #ff6b6b;
+}
+
+.empty,
+.loading {
+  text-align: center;
+  color: #999;
+  font-size: 26rpx;
+  padding: 120rpx 0;
+}

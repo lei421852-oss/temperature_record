@@ -1,0 +1,42 @@
+<view class="page">
+  <!-- 顶部：自动生成的今日日期 -->
+  <view class="header">
+    <view class="date-big">{{todayCN}}</view>
+    <view class="date-sub">今日记录 · 日期自动生成</view>
+  </view>
+
+  <!-- 体温滚动选择（以 0.1 为单位） -->
+  <view class="card temp-card">
+    <view class="temp-value">
+      <text class="temp-num">{{temp}}</text>
+      <text class="temp-unit">℃</text>
+    </view>
+    <picker-view class="temp-picker" value="{{pickerValue}}" indicator-style="height: 68rpx;" bindchange="onPickerChange">
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{tempOptions}}" wx:key="*this">{{item}}</view>
+      </picker-view-column>
+    </picker-view>
+    <view class="temp-range">{{tempMin}}℃ — {{tempMax}}℃ · 以 0.1 为单位滚动选择</view>
+  </view>
+
+  <!-- 提示：当前默认值的来源 -->
+  <view class="hint">{{hint}}</view>
+
+  <button class="save-btn" bindtap="onSave" disabled="{{saving || !loaded}}">
+    {{saving ? '保存中…' : (hasTodayRecord ? '更新今日记录' : '保存今日记录')}}
+  </button>
+
+  <!-- 功能入口 -->
+  <view class="nav-row">
+    <view class="card nav-card" bindtap="goHistory">
+      <view class="nav-title">历史记录</view>
+      <view class="nav-desc">查看 / 修改</view>
+      <view class="nav-desc">创建时间精确到秒 · 修改日志</view>
+    </view>
+    <view class="card nav-card" bindtap="goChart">
+      <view class="nav-title">温度曲线</view>
+      <view class="nav-desc">折线图</view>
+      <view class="nav-desc">导出到相册 / 分享</view>
+    </view>
+  </view>
+</view>

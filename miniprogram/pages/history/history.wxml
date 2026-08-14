@@ -1,0 +1,16 @@
+<view class="page">
+  <view class="list-tip" wx:if="{{records.length}}">共 {{records.length}} 条记录 · 点击可修改</view>
+
+  <view class="record-card" wx:for="{{records}}" wx:key="date" data-id="{{item._id}}" bindtap="goDetail">
+    <view class="record-left">
+      <view class="record-date">{{item.dateCN}}</view>
+      <view class="record-created">记录于 {{item.createdText}}</view>
+    </view>
+    <view class="record-temp">
+      <text class="num">{{item.temp}}</text><text class="unit">℃</text>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{empty && !loading}}">还没有任何记录，去首页记录第一条吧</view>
+  <view class="loading" wx:if="{{loading}}">加载中…</view>
+</view>

@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="card chart-card">
+    <view class="chart-title">体温变化曲线 · 共 {{count}} 条记录</view>
+    <canvas type="2d" id="chart" class="chart" bindtouchstart="onTouchStart"></canvas>
+    <view class="chart-tip">点击曲线上的点可查看对应日期与体温</view>
+  </view>
+
+  <button class="export-btn" bindtap="onExport" disabled="{{exporting || empty || loading}}">
+    {{exporting ? '导出中…' : '导出温度曲线（保存 / 分享图片）'}}
+  </button>
+
+  <view class="empty" wx:if="{{empty && !loading}}">暂无记录，先去首页记录第一条体温吧</view>
+  <view class="loading" wx:if="{{loading}}">加载中…</view>
+</view>

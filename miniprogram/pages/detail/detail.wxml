@@ -1,0 +1,48 @@
+<view class="page" wx:if="{{!loading}}">
+  <!-- 记录基本信息 -->
+  <view class="card info-card">
+    <view class="info-date">{{dateCN}}</view>
+    <view class="info-times">
+      <view class="info-row">
+        <text class="label">创建时间</text>
+        <text class="value">{{createdText}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">最后修改</text>
+        <text class="value">{{updatedText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 修改体温 -->
+  <view class="card edit-card">
+    <view class="edit-title">修改体温（0.1 为单位滚动选择）</view>
+    <view class="temp-value">
+      <text class="temp-num">{{temp}}</text>
+      <text class="temp-unit">℃</text>
+    </view>
+    <picker-view class="temp-picker" value="{{pickerValue}}" indicator-style="height: 68rpx;" bindchange="onPickerChange">
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{tempOptions}}" wx:key="*this">{{item}}</view>
+      </picker-view-column>
+    </picker-view>
+    <button class="save-btn" bindtap="onSave" disabled="{{saving}}">
+      {{saving ? '保存中…' : '保存修改（自动记修改日志）'}}
+    </button>
+  </view>
+
+  <!-- 记录日志：创建 + 每次修改 -->
+  <view class="card log-card">
+    <view class="log-title">记录日志（共 {{logs.length}} 条）</view>
+    <view class="log-item" wx:for="{{logs}}" wx:key="time">
+      <view class="log-main">
+        <text class="log-action">{{item.actionText}}</text>
+        <text class="log-change">{{item.changeText}}</text>
+      </view>
+      <view class="log-time">{{item.timeText}}</view>
+    </view>
+    <view class="log-empty" wx:if="{{logs.length === 0}}">暂无日志</view>
+  </view>
+</view>
+
+<view class="loading" wx:if="{{loading}}">加载中…</view>

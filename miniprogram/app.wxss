@@ -1,0 +1,9 @@
+page {
+  background: #f7f8fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #333;
+}
+
+button::after {
+  border: none;
+}
