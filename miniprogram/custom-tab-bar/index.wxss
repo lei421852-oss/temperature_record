@@ -1,0 +1,29 @@
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background: #ffffff;
+  border-top: 1rpx solid #e5e5e5;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 999;
+}
+
+.tab-item {
+  flex: 1;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-text {
+  font-size: 28rpx; /* 字号：原生默认约 20rpx，这里调大到 28rpx */
+  color: #999999;
+}
+
+.tab-item.active .tab-text {
+  color: #ff6b6b;
+  font-weight: 600;
+}

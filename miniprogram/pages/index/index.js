@@ -36,6 +36,13 @@ Page({
     this.loadAccount()
   },
 
+  // 底部导航栏：同步选中「记录」
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 0 })
+    }
+  },
+
   // 切换记录日期（默认今天；点击顶部日期可补记过去某天）
   async selectDate(date) {
     const isBackfill = date < this.today

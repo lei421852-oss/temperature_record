@@ -1,5 +1,5 @@
 .page {
-  padding: 24rpx 32rpx 60rpx;
+  padding: 24rpx 32rpx 200rpx; /* 底部留出自定义 tabBar 的空间 */
 }
 
 .card {

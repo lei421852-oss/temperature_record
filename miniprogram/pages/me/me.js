@@ -6,6 +6,10 @@ Page({
   },
 
   onShow() {
+    // 底部导航栏：同步选中「我的」
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 1 })
+    }
     this.loadAccount()
   },
 
