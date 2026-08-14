@@ -1,0 +1,91 @@
+.page {
+  padding: 24rpx 32rpx 60rpx;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.account-card {
+  display: flex;
+  align-items: center;
+}
+
+.account-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #fff0f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  margin-right: 24rpx;
+}
+
+.account-name {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.account-id {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.account-note {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.menu-card {
+  padding: 8rpx 28rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f2f2f2;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-name {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.menu-arrow {
+  font-size: 36rpx;
+  color: #ccc;
+}
+
+.logout-card {
+  padding: 0 28rpx;
+}
+
+.menu-item.logout {
+  justify-content: center;
+  border-bottom: none;
+}
+
+.menu-item.logout .menu-name {
+  color: #e53935;
+}
+
+.version {
+  text-align: center;
+  font-size: 22rpx;
+  color: #ccc;
+  margin-top: 8rpx;
+}

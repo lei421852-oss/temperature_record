@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/me/me",
     "pages/history/history",
     "pages/detail/detail",
     "pages/chart/chart"
@@ -10,6 +11,22 @@
     "navigationBarTitleText": "体温记录",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#f7f8fa"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#ff6b6b",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "记录"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "我的"
+      }
+    ]
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

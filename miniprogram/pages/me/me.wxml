@@ -1,0 +1,44 @@
+<view class="page">
+  <!-- 账号卡片 -->
+  <view class="card account-card">
+    <view class="account-avatar">👤</view>
+    <view class="account-info">
+      <view class="account-name">微信用户</view>
+      <view class="account-id">当前账号：{{accountText}}</view>
+      <view class="account-note">数据按微信账号独立保存</view>
+    </view>
+  </view>
+
+  <!-- 占位功能入口 -->
+  <view class="card menu-card">
+    <view class="menu-item" bindtap="onFeatureTap" data-id="switch">
+      <text class="menu-name">切换账号</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="onFeatureTap" data-id="backup">
+      <text class="menu-name">数据导出 / 备份</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="onFeatureTap" data-id="clean">
+      <text class="menu-name">数据清理</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="onFeatureTap" data-id="help">
+      <text class="menu-name">使用帮助</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="onFeatureTap" data-id="about">
+      <text class="menu-name">关于与隐私</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 退出登录（占位） -->
+  <view class="card logout-card">
+    <view class="menu-item logout" bindtap="onFeatureTap" data-id="logout">
+      <text class="menu-name">退出登录</text>
+    </view>
+  </view>
+
+  <view class="version">体温记录 v1.0 · 更多功能开发中</view>
+</view>
