@@ -51,4 +51,7 @@
   </view>
 
   <view class="version">体温记录 v1.0 · 更多功能开发中</view>
+
+  <!-- 登录面板：头像昵称填写 -->
+  <login-sheet visible="{{showLoginSheet}}" bind:login="onLoginSheet" bind:close="onLoginSheetClose" />
 </view>

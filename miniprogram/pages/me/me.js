@@ -5,7 +5,8 @@ Page({
     accountText: '',
     loggedIn: false,
     nickname: '微信用户',
-    avatarUrl: ''
+    avatarUrl: '',
+    showLoginSheet: false
   },
 
   onShow() {
@@ -43,10 +44,25 @@ Page({
     }
   },
 
-  // 登录
-  async onLoginTap() {
+  // 登录：弹出登录面板（头像昵称填写）
+  onLoginTap() {
+    this.setData({ showLoginSheet: true })
+  },
+
+  // 登录面板确认：e.detail = { nickname, avatarUrl }
+  onLoginSheet(e) {
+    const info = e.detail || {}
+    this.setData({ showLoginSheet: false })
+    this.doLoginWith(info)
+  },
+
+  onLoginSheetClose() {
+    this.setData({ showLoginSheet: false })
+  },
+
+  async doLoginWith(info) {
     try {
-      await account.doLogin()
+      await account.doLogin(info)
       this.refreshLogin()
       wx.showToast({ title: '登录成功', icon: 'success' })
     } catch (e) {

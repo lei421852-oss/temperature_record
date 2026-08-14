@@ -27,7 +27,8 @@ Page({
     periodBtnText: '记录月经开始',    // 按钮文字（含所选日期）
     // 账号
     accountText: '',
-    loggedIn: false                  // 是否已登录（本地登录状态）
+    loggedIn: false,                 // 是否已登录（本地登录状态）
+    showLoginSheet: false            // 登录面板（头像昵称填写）
   },
 
   async onLoad() {
@@ -51,10 +52,25 @@ Page({
     this.setData({ loggedIn: !!account.getLoginState() })
   },
 
-  // 点击"微信登录"按钮
-  async onLoginTap() {
+  // 点击"微信登录"按钮 → 弹出登录面板（选择头像/填写昵称）
+  onLoginTap() {
+    this.setData({ showLoginSheet: true })
+  },
+
+  // 登录面板确认：e.detail = { nickname, avatarUrl }
+  onLoginSheet(e) {
+    const info = e.detail || {}
+    this.setData({ showLoginSheet: false })
+    this.doLoginWith(info)
+  },
+
+  onLoginSheetClose() {
+    this.setData({ showLoginSheet: false })
+  },
+
+  async doLoginWith(info) {
     try {
-      await account.doLogin()
+      await account.doLogin(info)
       this.refreshLogin()
       wx.showToast({ title: '登录成功', icon: 'success' })
     } catch (e) {

@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "体温记录"
+  "navigationBarTitleText": "体温记录",
+  "usingComponents": {
+    "login-sheet": "/components/login-sheet/index"
+  }
 }

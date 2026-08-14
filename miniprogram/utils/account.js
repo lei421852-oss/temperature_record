@@ -71,27 +71,31 @@ function clearLoginState() {
   }
 }
 
-// 执行登录：获取 openid + 尝试获取头像昵称，保存本地登录状态，
-// 并同步一条记录到云端 users 集合（该集合未创建时静默跳过，不影响登录）
-async function doLogin() {
+// 执行登录：优先使用面板传入的昵称/头像；未提供时尝试 getUserProfile 兜底
+// （新版微信隐私策略下 getUserProfile 一般只返回默认值）。
+// 保存本地登录状态，并同步一条记录到云端 users 集合（未创建该集合时静默跳过）
+async function doLogin(params) {
   const oid = await getOpenid()
-  let nickname = '微信用户'
-  let avatarUrl = ''
-  try {
-    const res = await new Promise((resolve, reject) => {
-      wx.getUserProfile({
-        desc: '用于展示你的昵称与头像',
-        success: resolve,
-        fail: reject
+  let nickname = (params && params.nickname && params.nickname.trim()) || ''
+  let avatarUrl = (params && params.avatarUrl) || ''
+  if (!nickname) {
+    try {
+      const res = await new Promise((resolve, reject) => {
+        wx.getUserProfile({
+          desc: '用于展示你的昵称与头像',
+          success: resolve,
+          fail: reject
+        })
       })
-    })
-    if (res && res.userInfo) {
-      nickname = res.userInfo.nickName || nickname
-      avatarUrl = res.userInfo.avatarUrl || ''
+      if (res && res.userInfo) {
+        nickname = res.userInfo.nickName || ''
+        avatarUrl = res.userInfo.avatarUrl || ''
+      }
+    } catch (e) {
+      // ignore
     }
-  } catch (e) {
-    // 新版微信可能不再返回真实头像昵称，使用默认值
   }
+  nickname = nickname || '微信用户'
   const profile = {
     openid: oid,
     nickname: nickname,

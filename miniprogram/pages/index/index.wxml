@@ -59,4 +59,7 @@
       <view class="nav-desc">导出到相册 / 分享</view>
     </view>
   </view>
+
+  <!-- 登录面板：头像昵称填写 -->
+  <login-sheet visible="{{showLoginSheet}}" bind:login="onLoginSheet" bind:close="onLoginSheetClose" />
 </view>
