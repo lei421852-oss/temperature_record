@@ -117,13 +117,22 @@ Page({
     for (let d = 1; d <= daysInMonth; d++) {
       const date = year + '-' + pad(month) + '-' + pad(d)
       const rec = recordMap[date]
+      const menstruation = !!periodMap[date]
+      // 计算月经"长带"的带首/带尾（跨周边界也视为断点，保证两端有弧度）
+      const col = (lead + d - 1) % 7 // 0=周一
+      const prevDate = this.addDays(date, -1)
+      const nextDate = this.addDays(date, 1)
+      const runStart = menstruation && (!periodMap[prevDate] || col === 0)
+      const runEnd = menstruation && (!periodMap[nextDate] || col === 6)
       days.push({
         key: date,
         day: d,
         date,
         recorded: !!rec,
         tempText: rec ? rec.temp.toFixed(1) : '',
-        menstruation: !!periodMap[date],
+        menstruation: menstruation,
+        runStart: runStart,
+        runEnd: runEnd,
         isToday: date === this.todayStr
       })
     }

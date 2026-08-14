@@ -56,15 +56,27 @@
   border-radius: 12rpx;
 }
 
-/* 已记录：提亮 */
+/* 已记录（非月经期）：白色高亮 */
 .cal-cell.recorded {
-  background: #fff0f1;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(255, 107, 107, 0.14);
 }
 
-/* 月经期：淡红背景连成带状 + 日期红色圈圈 */
+/* 月经期：淡红长带（连续日子连成一条，两端带弧度） */
 .cal-cell.menstruation {
   background: #ffebee;
   border-radius: 0;
+  box-shadow: none;
+}
+
+.cal-cell.menstruation.run-start {
+  border-top-left-radius: 26rpx;
+  border-bottom-left-radius: 26rpx;
+}
+
+.cal-cell.menstruation.run-end {
+  border-top-right-radius: 26rpx;
+  border-bottom-right-radius: 26rpx;
 }
 
 .cal-day {

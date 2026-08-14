@@ -12,7 +12,7 @@
     <view class="cal-grid">
       <block wx:for="{{days}}" wx:key="key">
         <view wx:if="{{item.empty}}" class="cal-cell empty"></view>
-        <view wx:else class="cal-cell {{item.recorded ? 'recorded' : ''}} {{item.menstruation ? 'menstruation' : ''}}" data-date="{{item.date}}" data-recorded="{{item.recorded}}" bindtap="onDayTap">
+        <view wx:else class="cal-cell {{item.recorded ? 'recorded' : ''}} {{item.menstruation ? 'menstruation' : ''}} {{item.runStart ? 'run-start' : ''}} {{item.runEnd ? 'run-end' : ''}}" data-date="{{item.date}}" data-recorded="{{item.recorded}}" bindtap="onDayTap">
           <view class="cal-day {{item.isToday ? 'today' : ''}} {{item.menstruation ? 'menstruation' : ''}} {{item.recorded ? '' : 'unrecorded'}}">{{item.day}}</view>
           <view class="cal-temp {{item.menstruation ? 'menstruation' : ''}}" wx:if="{{item.recorded}}">{{item.tempText}}</view>
         </view>
